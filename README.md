@@ -1,6 +1,6 @@
 # 😺 BUNNY AI Unispace
 
-![Screenshot of the BUNNY application](./public/main pg.png) 
+![Screenshot of the BUNNY application](./public/mainpg.png) 
 
 A web application that allows users to connect to multiple AI services (like Gemini, ChatGPT, Claude) and query them simultaneously from a single interface.
 
