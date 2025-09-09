@@ -1,0 +1,352 @@
+/* src/components/SettingsModal.css */
+
+.settings-sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-right: 1px solid var(--theme-border);
+    background: var(--theme-bg-secondary);
+    width: 220px;
+  }
+  
+  .settings-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--theme-text-secondary);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    transition: all var(--transition-fast);
+  }
+  
+  .settings-tab:hover {
+    background: var(--theme-bg-surface);
+    color: var(--theme-text);
+  }
+  
+  .settings-tab.active {
+    background: var(--bunny-primary);
+    color: white;
+  }
+  
+  .tab-icon {
+    font-size: 1.2rem;
+  }
+  
+  .settings-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+  
+  .tab-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .tab-description {
+    color: var(--theme-text-secondary);
+    margin-bottom: 2rem;
+  }
+  
+  /* AI Services Tab Styles */
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .service-config-card {
+    background: var(--theme-bg-secondary);
+    border: 1px solid var(--theme-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+  
+  .service-config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+  }
+  
+  .service-config-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .service-config-info h4 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  
+  .service-config-info p {
+    margin: 0;
+    color: var(--theme-text-secondary);
+    font-size: 0.85rem;
+  }
+  
+  .service-config-icon {
+    font-size: 1.5rem;
+  }
+  
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+  }
+  
+  .status-connected { background: rgba(16, 185, 129, 0.1); color: var(--theme-success); border-color: var(--theme-success); }
+  .status-error { background: rgba(239, 68, 68, 0.1); color: var(--theme-error); border-color: var(--theme-error); }
+  .status-disconnected { background: var(--theme-bg-surface); color: var(--theme-text-secondary); border-color: var(--theme-border); }
+  
+  .service-config-description {
+    font-size: 0.9rem;
+    color: var(--theme-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--theme-bg-primary);
+    border: 1px solid var(--theme-border);
+    border-radius: 0.5rem;
+    color: var(--theme-text);
+    font-family: inherit;
+    font-size: 0.95rem;
+  }
+  
+  .form-input:focus {
+    border-color: var(--bunny-primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+    outline: none;
+  }
+  
+  .form-help {
+    font-size: 0.8rem;
+    color: var(--theme-text-secondary);
+    margin-top: 0.5rem;
+  }
+  
+  .form-actions, .connected-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .connection-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--theme-success);
+  }
+  
+  .api-key-help {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--theme-bg-secondary);
+    border-radius: 0.5rem;
+  }
+  
+  .api-key-help h4 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .api-key-help ul {
+    padding-left: 1.25rem;
+    color: var(--theme-text-secondary);
+    font-size: 0.9rem;
+  }
+  
+  /* Appearance Tab Styles */
+  .appearance-section {
+    margin-bottom: 2rem;
+  }
+  
+  .theme-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .theme-option-button {
+    background: var(--theme-bg-secondary);
+    border: 2px solid var(--theme-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--theme-text);
+  }
+  
+  .theme-option-button:hover {
+    border-color: var(--bunny-primary);
+    background: var(--theme-bg-surface);
+  }
+  
+  .theme-option-button.active {
+    border-color: var(--bunny-primary);
+    background: var(--theme-bg-surface);
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+  }
+  
+  .theme-icon {
+    font-size: 2rem;
+  }
+  
+  .theme-option-button small {
+    color: var(--theme-text-secondary);
+  }
+  
+  /* Account Tab Styles */
+  .account-section {
+    margin-bottom: 2rem;
+  }
+  
+  .account-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    background: var(--theme-bg-secondary);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    text-align: center;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--bunny-primary);
+  }
+  
+  .stat-label {
+    color: var(--theme-text-secondary);
+  }
+  
+  .data-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* General Button Styles used in the modal */
+  .button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .button-primary { background: var(--bunny-primary); color: white; }
+  .button-primary:hover:not(:disabled) { opacity: 0.85; }
+  
+  .button-danger { background: var(--theme-error); color: white; }
+  .button-danger:hover:not(:disabled) { opacity: 0.85; }
+  
+  .button-secondary { background: var(--theme-bg-surface); color: var(--theme-text); }
+  .button-secondary:hover:not(:disabled) { background: #475569; }
+  
+  .button-danger-outline {
+    background: transparent;
+    border: 1px solid var(--theme-error);
+    color: var(--theme-error);
+  }
+  .button-danger-outline:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.1);
+  }
+  /* Add to App.css or a new SettingsPage.css */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.settings-card {
+  background: var(--theme-bg-secondary);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border-left: 4px solid var(--theme-bg-surface);
+}
+
+.settings-card.connected {
+  border-left-color: var(--theme-success);
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.status-badge {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  text-transform: capitalize;
+}
+
+.status-badge.disconnected { background: var(--theme-bg-surface); }
+.status-badge.connected { background: var(--theme-success); color: white; }
+.status-badge.error { background: var(--theme-error); color: white; }
+
+.api-key-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.api-key-input-group input {
+  flex-grow: 1;
+  background: var(--theme-bg-primary);
+  border: 1px solid var(--theme-border);
+  color: var(--theme-text);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.button-connect { background: var(--bunny-primary); color: white; }
+.button-disconnect { background: var(--theme-error); color: white; }
