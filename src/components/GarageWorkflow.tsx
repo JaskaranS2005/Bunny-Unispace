@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { AI_SERVICES, aiServiceManager, AIResponse } from '../services/aiService';
+import { aiServiceManager, AIResponse } from '../services/aiService';
 import { toast } from 'react-hot-toast';
 import ResponseRenderer from './ResponseRenderer';
 import Icon, { IconName } from './Icon';

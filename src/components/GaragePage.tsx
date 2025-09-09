@@ -43,7 +43,7 @@ const GARAGE_OPTIONS = [
   }
 ];
 
-const GaragePage: React.FC<GaragePageProps> = ({ connectedServices, onBack }) => {
+const GaragePage: React.FC<GaragePageProps> = ({ connectedServices }) => {
   const [selectedOption, setSelectedOption] = useState<any>(null);
 
   if (selectedOption) {
