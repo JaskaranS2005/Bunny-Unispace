@@ -6,8 +6,7 @@ import MainPage from './components/MainPage';
 import GaragePage from './components/GaragePage';
 import SettingsPage from './components/SettingsPage';
 import Icon from './components/Icon';
-import bunnyLogo from './assets/bunnylogo.svg'; 
-
+import bunnyLogo from './assets/bunnylogo.svg';
 import './App.css';
 
 const Header: React.FC<{

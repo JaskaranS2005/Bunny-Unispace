@@ -6,6 +6,7 @@ export type IconName = keyof typeof FeatherIcons;
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   name: IconName;
   className?: string;
+  size?: string | number;
 }
 
 const Icon: React.FC<IconProps> = ({ name, className, ...props }) => {
