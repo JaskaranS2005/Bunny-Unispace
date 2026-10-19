@@ -5,9 +5,11 @@ import { AI_SERVICES } from './services/aiService';
 import MainPage from './components/MainPage';
 import GaragePage from './components/GaragePage';
 import SettingsPage from './components/SettingsPage';
+import OnboardingTour from './components/OnboardingTour';
 import Icon from './components/Icon';
 import bunnyLogo from './assets/bunnylogo.svg';
 import './App.css';
+import './animations.css';
 
 const Header: React.FC<{
   currentPage: string;
@@ -84,6 +86,7 @@ const AppContent: React.FC = () => {
           />
         )}
       </main>
+      <OnboardingTour />
       <Toaster
         position="top-right"
         toastOptions={{
