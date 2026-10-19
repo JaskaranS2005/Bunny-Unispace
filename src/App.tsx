@@ -10,7 +10,6 @@ import Icon from './components/Icon';
 import bunnyLogo from './assets/bunnylogo.svg';
 import './App.css';
 import './animations.css';
-import './interface.css';
 
 const Header: React.FC<{
   currentPage: string;
