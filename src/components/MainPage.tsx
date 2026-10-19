@@ -4,6 +4,7 @@ import { AI_SERVICES, aiServiceManager, AIResponse } from '../services/aiService
 import { toast } from 'react-hot-toast';
 import ResponseRenderer from './ResponseRenderer';
 import Icon, { IconName } from './Icon';
+import AgentThinking from './AgentThinking';
 
 interface ChatResponse {
   id: string;
@@ -143,15 +144,18 @@ const MainPage: React.FC = () => {
           const isConnected = connections[service.id]?.status === 'connected';
           const isSelected = selectedServices.includes(service.id);
           return (
-            <div 
-              key={service.id} 
+            <button
+              type="button"
+              key={service.id}
               className={`ai-selection-pill ${isConnected ? 'connected' : ''} ${isSelected ? 'selected' : ''}`}
               onClick={() => handleServiceToggle(service.id)}
+              aria-pressed={isSelected}
+              aria-label={`${service.name} ${isConnected ? (isSelected ? 'selected' : 'not selected') : 'not connected'}`}
             >
               <Icon name={service.icon as IconName} />
               <span>{service.name}</span>
-              <div className="status-dot"></div>
-            </div>
+              <span className="status-dot" aria-hidden="true"></span>
+            </button>
           );
         })}
       </section>
@@ -179,10 +183,28 @@ const MainPage: React.FC = () => {
                       <Icon name={service.icon as IconName} />
                       <span>{service.name}</span>
                     </div>
+                    <span className={`response-state ${response.loading ? 'is-thinking' : ''}`}>
+                      <span className="response-state-dot" aria-hidden="true"></span>
+                      {response.loading ? 'Thinking' : response.error ? 'Needs attention' : 'Ready'}
+                    </span>
                   </div>
                   <div className="response-content">
-                    {response.loading && (<div className="response-loading"><div className="loading-spinner"></div><p>Generating response...</p></div>)}
-                    {response.error && (<div className="response-error"><p>❌ {response.error}</p></div>)}
+                    {response.loading && (
+                      <div className="response-loading">
+                        <AgentThinking serviceName={service.name} />
+                        <div className="response-skeleton" aria-hidden="true">
+                          <span className="response-skeleton-line"></span>
+                          <span className="response-skeleton-line"></span>
+                          <span className="response-skeleton-line"></span>
+                        </div>
+                      </div>
+                    )}
+                    {response.error && (
+                      <div className="response-error" role="alert">
+                        <p>Unable to complete this response.</p>
+                        <small>{response.error}</small>
+                      </div>
+                    )}
                     
                     {response.content && !response.loading && (
                       <div className="response-body">
@@ -190,6 +212,7 @@ const MainPage: React.FC = () => {
                           className="response-action" 
                           onClick={() => copyToClipboard(response.content, service.name)} 
                           title="Copy response"
+                          aria-label={`Copy ${service.name} response`}
                         >
                           <Icon name="FiCopy"/>
                         </button>
@@ -216,11 +239,11 @@ const MainPage: React.FC = () => {
           {imagePreview && (
             <div className="image-preview">
               <img src={imagePreview} alt="Selected preview" />
-              <button className="remove-image-button" onClick={removeImage}>✕</button>
+              <button className="remove-image-button" onClick={removeImage} aria-label="Remove attached image">×</button>
             </div>
           )}
           <div className="prompt-input-wrapper">
-            <button className="action-button" onClick={() => fileInputRef.current?.click()}>
+            <button className="action-button" onClick={() => fileInputRef.current?.click()} aria-label="Attach an image">
               <Icon name="FiImage" />
             </button>
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" style={{ display: 'none' }} />
@@ -238,6 +261,7 @@ const MainPage: React.FC = () => {
               className="submit-button" 
               onClick={handleSubmit} 
               disabled={(!prompt.trim() && !selectedImage) || isSubmitting || selectedServices.length === 0}
+              aria-label={isSubmitting ? 'Sending prompt' : 'Send prompt'}
             >
               {isSubmitting ? <Icon name="FiLoader" className="spinner"/> : <Icon name="FiArrowUp"/>}
             </button>
