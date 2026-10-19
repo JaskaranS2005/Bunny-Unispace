@@ -139,6 +139,14 @@ const asText = (content: unknown): string => {
   return 'No response';
 };
 
+const errorMessage = (error: unknown): string => {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as { error?: { message?: string } } | undefined;
+    return data?.error?.message || error.message;
+  }
+  return error instanceof Error ? error.message : 'Request failed.';
+};
+
 class AIServiceManager {
   private static instance: AIServiceManager;
 
@@ -181,8 +189,8 @@ class AIServiceManager {
         tokens: response.data.usage?.total_tokens,
         model: response.data.model || model,
       };
-    } catch (error: any) {
-      throw new Error(`${serviceId} error: ${error.response?.data?.error?.message || error.message}`);
+    } catch (error: unknown) {
+      throw new Error(`${serviceId} error: ${errorMessage(error)}`);
     }
   }
 
@@ -206,8 +214,8 @@ class AIServiceManager {
         tokens: (response.data.usage?.input_tokens || 0) + (response.data.usage?.output_tokens || 0),
         model: response.data.model || model,
       };
-    } catch (error: any) {
-      throw new Error(`Claude error: ${error.response?.data?.error?.message || error.message}`);
+    } catch (error: unknown) {
+      throw new Error(`Claude error: ${errorMessage(error)}`);
     }
   }
 
@@ -234,8 +242,8 @@ class AIServiceManager {
         tokens: response.data.usageMetadata?.totalTokenCount,
         model,
       };
-    } catch (error: any) {
-      throw new Error(`Gemini error: ${error.response?.data?.error?.message || error.message}`);
+    } catch (error: unknown) {
+      throw new Error(`Gemini error: ${errorMessage(error)}`);
     }
   }
 
