@@ -28,6 +28,15 @@ interface GarageWorkflowProps {
   onBack: () => void;
 }
 
+const buildWorkflowSteps = (roles: Record<string, { name: string; description: string }>): WorkflowStep[] =>
+  Object.entries(roles).map(([role, definition]) => ({
+    id: role,
+    role,
+    roleName: definition.name,
+    prompt: '',
+    status: 'pending',
+  }));
+
 const ROLE_DEFINITIONS: Record<WorkflowOption['id'], Record<string, { name: string; description: string }>> = {
   build: {
     A: { name: 'Prompt refiner', description: 'Turns the request into clear constraints and specifications.' },
@@ -70,17 +79,9 @@ const GarageWorkflow: React.FC<GarageWorkflowProps> = ({ selectedOption, connect
   const [additionalInput, setAdditionalInput] = useState('');
   const [showAddMore, setShowAddMore] = useState(false);
 
-  const createSteps = (): WorkflowStep[] => Object.entries(roles).map(([role, definition]) => ({
-    id: role,
-    role,
-    roleName: definition.name,
-    prompt: '',
-    status: 'pending',
-  }));
-
   useEffect(() => {
-    setWorkflowSteps(createSteps());
-  }, [selectedOption.id]);
+    setWorkflowSteps(buildWorkflowSteps(roles));
+  }, [roles]);
 
   const handleRoleAssignment = (roleId: string, aiId: string) => {
     setRoleAssignments(previous => ({ ...previous, [roleId]: aiId }));
@@ -142,8 +143,9 @@ const GarageWorkflow: React.FC<GarageWorkflowProps> = ({ selectedOption, connect
       } else {
         toast.success('Workflow complete.');
       }
-    } catch (error: any) {
-      toast.error(step.roleName + ': ' + error.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Request failed.';
+      toast.error(step.roleName + ': ' + message);
       setWorkflowSteps(previous => previous.map((item, index) => index === stepIndex
         ? { ...item, status: 'pending' }
         : item,
@@ -185,7 +187,7 @@ const GarageWorkflow: React.FC<GarageWorkflowProps> = ({ selectedOption, connect
     setAdditionalInput('');
     setShowAddMore(false);
     setRoleAssignments({});
-    setWorkflowSteps(createSteps());
+    setWorkflowSteps(buildWorkflowSteps(roles));
   };
 
   if (!workflowStarted) {
