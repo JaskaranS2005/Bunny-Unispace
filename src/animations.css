@@ -283,3 +283,28 @@
     animation: none;
   }
 }
+
+/* Small baseline resets for interactive elements enhanced by the motion layer. */
+.ai-selection-pill {
+  appearance: none;
+  font: inherit;
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.response-service {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-status-label {
+  margin-top: 0.15rem;
+  color: var(--theme-text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+}
