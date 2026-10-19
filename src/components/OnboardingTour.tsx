@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 interface TourStep {
   target: string;
@@ -41,6 +41,11 @@ const OnboardingTour: React.FC = () => {
 
   const step = useMemo(() => TOUR_STEPS[stepIndex], [stepIndex]);
 
+  const finishTour = useCallback(() => {
+    window.localStorage.setItem('bunny-onboarding-complete', 'true');
+    setVisible(false);
+  }, []);
+
   useEffect(() => {
     if (window.localStorage.getItem('bunny-onboarding-complete') === 'true') {
       return;
@@ -74,12 +79,7 @@ const OnboardingTour: React.FC = () => {
       window.removeEventListener('scroll', updateTarget, true);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [step, visible]);
-
-  const finishTour = () => {
-    window.localStorage.setItem('bunny-onboarding-complete', 'true');
-    setVisible(false);
-  };
+  }, [finishTour, step, visible]);
 
   const goNext = () => {
     if (stepIndex === TOUR_STEPS.length - 1) {
