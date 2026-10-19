@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import Icon from './Icon';
 
 interface TourStep {
   target: string;
@@ -104,7 +105,7 @@ const OnboardingTour: React.FC = () => {
 
   return (
     <div className="onboarding-tour" role="dialog" aria-modal="true" aria-labelledby="bunny-tour-title">
-      <button className="onboarding-scrim" aria-label="Skip Bunny tour" onClick={finishTour} />
+      <button type="button" className="onboarding-scrim" aria-label="Skip Bunny tour" onClick={finishTour} />
       <div
         className="onboarding-highlight"
         aria-hidden="true"
@@ -118,14 +119,14 @@ const OnboardingTour: React.FC = () => {
       <section className="onboarding-card" style={{ top, left, width: cardWidth }}>
         <div className="onboarding-card-header">
           <span>Getting started</span>
-          <button className="onboarding-close" onClick={finishTour} aria-label="Close Bunny tour">×</button>
+          <button type="button" className="onboarding-close" onClick={finishTour} aria-label="Close Bunny tour"><Icon name="FiX" aria-hidden="true" /></button>
         </div>
         <p className="onboarding-progress">Step {stepIndex + 1} of {TOUR_STEPS.length}</p>
         <h2 id="bunny-tour-title">{step.title}</h2>
         <p>{step.description}</p>
         <div className="onboarding-actions">
-          <button className="onboarding-skip" onClick={finishTour}>Skip tour</button>
-          <button className="onboarding-next" onClick={goNext}>
+          <button type="button" className="onboarding-skip" onClick={finishTour}>Skip tour</button>
+          <button type="button" className="onboarding-next" onClick={goNext}>
             {stepIndex === TOUR_STEPS.length - 1 ? 'Finish' : 'Next'}
           </button>
         </div>
