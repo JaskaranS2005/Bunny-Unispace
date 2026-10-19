@@ -4,6 +4,7 @@ import { aiServiceManager, AIResponse } from '../services/aiService';
 import { toast } from 'react-hot-toast';
 import ResponseRenderer from './ResponseRenderer';
 import Icon, { IconName } from './Icon';
+import AgentThinking from './AgentThinking';
 
 interface WorkflowStep {
   id: string;
@@ -265,14 +266,15 @@ const GarageWorkflow: React.FC<GarageWorkflowProps> = ({ selectedOption, connect
         {workflowSteps.map((step, index) => (
           <React.Fragment key={step.id}>
             <div className={`step-node ${step.status}`}>
-              <div className="step-status-icon">
-                {step.status === 'completed' && '✅'}
-                {step.status === 'processing' && '⏳'}
-                {step.status === 'pending' && '...'}
+              <div className="step-status-icon" aria-hidden="true">
+                <span className="step-status-dot" />
               </div>
               <div className="step-info">
                 <span className="step-role-id">Role {step.role}</span>
                 <span className="step-role-name">{step.roleName}</span>
+                <span className="step-status-label">
+                  {step.status === 'processing' ? 'Thinking' : step.status === 'completed' ? 'Complete' : step.status === 'user_input' ? 'Needs your input' : 'Waiting'}
+                </span>
               </div>
             </div>
             {index < workflowSteps.length - 1 && <div className="step-connector"></div>}
@@ -280,7 +282,7 @@ const GarageWorkflow: React.FC<GarageWorkflowProps> = ({ selectedOption, connect
         ))}
       </div>
       <div className="workflow-results-container">
-        {workflowSteps.filter(step => step.status !== 'pending' && step.response).map(step => {
+        {workflowSteps.filter(step => step.status !== 'pending').map(step => {
           const service = connectedServices.find(s => s.id === roleAssignments[step.role]);
           return (
             <div key={step.id} className="workflow-result-item">
@@ -291,7 +293,16 @@ const GarageWorkflow: React.FC<GarageWorkflowProps> = ({ selectedOption, connect
                     </div>
                 </div>
                 <div className="response-content">
-                  {step.status === 'processing' && (<div className="response-loading"><div className="loading-spinner"></div><p>Generating response...</p></div>)}
+                  {step.status === 'processing' && (
+                    <div className="response-loading">
+                      <AgentThinking serviceName={service?.name || step.roleName} compact />
+                      <div className="response-skeleton" aria-hidden="true">
+                        <span className="response-skeleton-line"></span>
+                        <span className="response-skeleton-line"></span>
+                        <span className="response-skeleton-line"></span>
+                      </div>
+                    </div>
+                  )}
                   {step.response && (
                       <div className="response-body">
                            <div className="response-text">
