@@ -91,7 +91,7 @@ const ResponseRenderer: React.FC<ResponseRendererProps> = ({ content }) => {
     lines.forEach((line, index) => {
       const trimmedLine = line.trim();
       if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
-        currentList.push(trimmedLine.replace(/^[\s]*[\*\-]\s*/, ''));
+        currentList.push(trimmedLine.replace(/^\s*[*-]\s*/, ''));
       } else if (trimmedLine.startsWith('#')) {
         renderList();
         const level = trimmedLine.match(/^#+/)?.[0].length || 1;
