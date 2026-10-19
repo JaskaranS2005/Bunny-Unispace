@@ -127,12 +127,13 @@ const MainPage: React.FC = () => {
           },
         }));
         if ('vibrate' in navigator) navigator.vibrate(50);
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Request failed.';
         setResponses(previous => ({
           ...previous,
-          [service.id]: { ...previous[service.id], content: '', loading: false, error: error.message },
+          [service.id]: { ...previous[service.id], content: '', loading: false, error: message },
         }));
-        toast.error(labelFor(service.id) + ': ' + error.message);
+        toast.error(labelFor(service.id) + ': ' + message);
       }
     });
 
@@ -147,7 +148,7 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const useExample = (example: string) => {
+  const applyExample = (example: string) => {
     setPrompt(example);
     window.requestAnimationFrame(() => textareaRef.current?.focus());
   };
@@ -204,7 +205,7 @@ const MainPage: React.FC = () => {
             <p>Send one prompt to your selected AI providers, then keep the answer that earns your trust.</p>
             <div className="example-prompts" aria-label="Example prompts">
               {EXAMPLE_PROMPTS.map(example => (
-                <button type="button" key={example} onClick={() => useExample(example)}>
+                <button type="button" key={example} onClick={() => applyExample(example)}>
                   {example}
                 </button>
               ))}
