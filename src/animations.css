@@ -308,3 +308,16 @@
   font-size: 0.72rem;
   letter-spacing: 0.01em;
 }
+
+
+.spinner {
+  animation: bunny-spin 900ms linear infinite;
+}
+
+@keyframes bunny-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
