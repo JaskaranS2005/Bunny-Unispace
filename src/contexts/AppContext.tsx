@@ -29,12 +29,15 @@ const KEY_STORAGE_PREFIX = 'bunny-session-key-';
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+// Context hooks intentionally share this module with their providers.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) throw new Error('useTheme must be used within a ThemeProvider');
   return context;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) throw new Error('useApp must be used within an AppProvider');
@@ -80,7 +83,8 @@ export const AppProviders: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const persistentConnections = Object.fromEntries(
       Object.entries(connections).map(([serviceId, connection]) => {
-        const { apiKey: _apiKey, ...safeConnection } = connection;
+        const safeConnection = { ...connection };
+        delete safeConnection.apiKey;
         return [serviceId, safeConnection];
       }),
     );
