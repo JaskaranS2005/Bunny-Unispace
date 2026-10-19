@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { AppProviders, useApp, useTheme } from './contexts/AppContext';
-import { AI_SERVICES } from './services/aiService';
+import { AI_SERVICES, getServiceDisplayName } from './services/aiService';
 import MainPage from './components/MainPage';
 import GaragePage from './components/GaragePage';
 import SettingsPage from './components/SettingsPage';
@@ -10,6 +10,7 @@ import Icon from './components/Icon';
 import bunnyLogo from './assets/bunnylogo.svg';
 import './App.css';
 import './animations.css';
+import './interface.css';
 
 const Header: React.FC<{
   currentPage: string;
@@ -43,19 +44,25 @@ const Header: React.FC<{
           >
             <Icon name="FiSettings" /> Settings
           </button>
-          <div className="theme-toggle">
-            <div
+          <div className="theme-toggle" aria-label="Colour theme">
+            <button
+              type="button"
               className={`theme-option ${theme === 'light' ? 'active' : ''}`}
               onClick={() => setTheme('light')}
+              aria-label="Use light theme"
+              aria-pressed={theme === 'light'}
             >
-              <Icon name="FiSun" />
-            </div>
-            <div
+              <Icon name="FiSun" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
               className={`theme-option ${theme === 'dark' ? 'active' : ''}`}
               onClick={() => setTheme('dark')}
+              aria-label="Use dark theme"
+              aria-pressed={theme === 'dark'}
             >
-              <Icon name="FiMoon" />
-            </div>
+              <Icon name="FiMoon" aria-hidden="true" />
+            </button>
           </div>
         </nav>
       </div>
@@ -66,9 +73,9 @@ const Header: React.FC<{
 const AppContent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('main');
   const { connections } = useApp();
-  const connectedServices = AI_SERVICES.filter(service => 
-    connections[service.id]?.status === 'connected'
-  );
+  const connectedServices = AI_SERVICES
+    .filter(service => connections[service.id]?.status === 'connected')
+    .map(service => ({ ...service, name: getServiceDisplayName(service, connections[service.id]) }));
 
   return (
     <div className="app">
