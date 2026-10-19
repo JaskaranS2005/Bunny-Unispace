@@ -1,107 +1,155 @@
 import React, { useState } from 'react';
 import { useApp } from '../contexts/AppContext';
-import { AI_SERVICES, aiServiceManager, DEFAULT_MODELS } from '../services/aiService';
+import { AI_SERVICES, DEFAULT_MODELS, getServiceDisplayName } from '../services/aiService';
 import Icon, { IconName } from './Icon';
 import { toast } from 'react-hot-toast';
 import { triggerHaptic } from '../utils/feedback';
 
+interface ProviderDraft {
+  apiKey: string;
+  model: string;
+  nickname: string;
+}
+
 const SettingsPage: React.FC = () => {
   const { connections, setConnection, removeConnection } = useApp();
-  const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
-  const [modelNames, setModelNames] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [drafts, setDrafts] = useState<Record<string, ProviderDraft>>({});
 
-  const handleApiKeyChange = (serviceId: string, key: string) => {
-    setApiKeys(prev => ({ ...prev, [serviceId]: key }));
+  const getDraft = (serviceId: string): ProviderDraft => {
+    const connection = connections[serviceId];
+    return drafts[serviceId] || {
+      apiKey: '',
+      model: connection?.model || DEFAULT_MODELS[serviceId],
+      nickname: connection?.nickname || '',
+    };
   };
 
-  const handleModelNameChange = (serviceId: string, name: string) => {
-    setModelNames(prev => ({ ...prev, [serviceId]: name }));
+  const updateDraft = (serviceId: string, field: keyof ProviderDraft, value: string) => {
+    setDrafts(previous => ({
+      ...previous,
+      [serviceId]: { ...getDraft(serviceId), [field]: value },
+    }));
   };
 
-  const handleConnect = async (serviceId: string) => {
+  const saveProvider = (serviceId: string) => {
     triggerHaptic();
-    const apiKey = apiKeys[serviceId];
+    const service = AI_SERVICES.find(item => item.id === serviceId);
+    const connection = connections[serviceId];
+    const draft = getDraft(serviceId);
+    const apiKey = draft.apiKey.trim() || connection?.apiKey;
+
     if (!apiKey) {
-      toast.error('Please enter an API key.');
+      toast.error('Enter an API key to save this provider.');
       return;
     }
-    
-    const model = modelNames[serviceId] || DEFAULT_MODELS[serviceId as keyof typeof DEFAULT_MODELS];
-    
-    setLoading(prev => ({ ...prev, [serviceId]: true }));
-    const isConnected = await aiServiceManager.testConnection(serviceId, apiKey, model);
-    setLoading(prev => ({ ...prev, [serviceId]: false }));
 
-    const serviceName = AI_SERVICES.find(s => s.id === serviceId)?.name || 'Service';
-
-    if (isConnected) {
-      setConnection(serviceId, { id: serviceId, status: 'connected', apiKey, model });
-      toast.success(`${serviceName} connected!`);
-    } else {
-      setConnection(serviceId, { id: serviceId, status: 'error' });
-      toast.error(`Failed to connect to ${serviceName}. Check API key and model name.`);
-    }
+    setConnection(serviceId, {
+      id: serviceId,
+      status: 'connected',
+      apiKey,
+      model: draft.model.trim() || DEFAULT_MODELS[serviceId],
+      nickname: draft.nickname.trim(),
+    });
+    setDrafts(previous => ({
+      ...previous,
+      [serviceId]: { ...draft, apiKey: '' },
+    }));
+    toast.success(getServiceDisplayName(service!, { nickname: draft.nickname }) + ' is ready for this browser session.');
   };
 
-  const handleDisconnect = (serviceId: string) => {
+  const disconnectProvider = (serviceId: string) => {
     triggerHaptic();
-    const serviceName = AI_SERVICES.find(s => s.id === serviceId)?.name || 'Service';
+    const service = AI_SERVICES.find(item => item.id === serviceId);
     removeConnection(serviceId);
-    setApiKeys(prev => ({ ...prev, [serviceId]: '' }));
-    setModelNames(prev => ({ ...prev, [serviceId]: '' }));
-    toast.success(`${serviceName} disconnected.`);
+    setDrafts(previous => ({ ...previous, [serviceId]: { apiKey: '', model: DEFAULT_MODELS[serviceId], nickname: '' } }));
+    toast.success((service?.name || 'Provider') + ' removed.');
   };
 
   return (
-    <div className="settings-page">
-      <h2>AI Service Connections</h2>
-      <p>Connect your services by providing an API key and optionally a custom model name.</p>
-      <div className="settings-grid">
+    <section className="settings-page" aria-labelledby="settings-title">
+      <header className="settings-intro">
+        <div>
+          <h1 id="settings-title">Providers</h1>
+          <p>Add the models you want to compare. Each provider can have its own model name and nickname.</p>
+        </div>
+        <div className="security-note" role="note">
+          <Icon name="FiShield" aria-hidden="true" />
+          <span>Keys are kept only for this browser session and are never sent for validation when you save.</span>
+        </div>
+      </header>
+
+      <div className="provider-list">
         {AI_SERVICES.map(service => {
           const connection = connections[service.id];
+          const draft = getDraft(service.id);
           const isConnected = connection?.status === 'connected';
+          const displayName = getServiceDisplayName(service, connection);
+
           return (
-            <div key={service.id} className={`settings-card ${isConnected ? 'connected' : ''}`}>
-              <div className="settings-card-header">
-                <Icon name={service.icon as IconName} style={{ color: service.color }} size={24}/>
-                <h3>{service.name}</h3>
-                <span className={`status-badge ${connection?.status || 'disconnected'}`}>
-                  {connection?.status || 'disconnected'}
+            <article key={service.id} className="provider-row">
+              <div className="provider-overview">
+                <Icon name={service.icon as IconName} size={20} aria-hidden="true" />
+                <div>
+                  <h2>{displayName}</h2>
+                  <p>{service.description}</p>
+                </div>
+                <span className={'connection-state ' + (isConnected ? 'connected' : '')}>
+                  {isConnected ? 'Ready' : 'Not connected'}
                 </span>
               </div>
-              <p>{service.description}</p>
-              <div className="api-key-input-group">
-                <input
-                  type="password"
-                  placeholder="API Key"
-                  value={apiKeys[service.id] || ''}
-                  onChange={(e) => handleApiKeyChange(service.id, e.target.value)}
-                  disabled={isConnected}
-                />
-                <input
-                  type="text"
-                  placeholder={`Model (e.g., ${DEFAULT_MODELS[service.id as keyof typeof DEFAULT_MODELS]})`}
-                  value={modelNames[service.id] || (isConnected ? connection?.model : '') || ''}
-                  onChange={(e) => handleModelNameChange(service.id, e.target.value)}
-                  disabled={isConnected}
-                  className="model-input"
-                />
-                {isConnected ? (
-                  <button className="button-disconnect" onClick={() => handleDisconnect(service.id)}>
-                    Disconnect
+
+              <div className="provider-form">
+                <label>
+                  <span>Nickname</span>
+                  <input
+                    type="text"
+                    value={draft.nickname}
+                    onChange={event => updateDraft(service.id, 'nickname', event.target.value)}
+                    placeholder={service.name}
+                    maxLength={32}
+                  />
+                </label>
+                <label>
+                  <span>Model</span>
+                  <input
+                    type="text"
+                    value={draft.model}
+                    onChange={event => updateDraft(service.id, 'model', event.target.value)}
+                    placeholder={DEFAULT_MODELS[service.id]}
+                    spellCheck="false"
+                  />
+                </label>
+                <label className="api-key-field">
+                  <span>{isConnected ? 'Replace API key' : 'API key'}</span>
+                  <input
+                    type="password"
+                    value={draft.apiKey}
+                    onChange={event => updateDraft(service.id, 'apiKey', event.target.value)}
+                    placeholder={isConnected ? 'Stored for this session' : 'Paste your API key'}
+                    autoComplete="off"
+                    spellCheck="false"
+                  />
+                </label>
+                <div className="provider-actions">
+                  <a href={service.website} target="_blank" rel="noreferrer" className="endpoint-link">
+                    <Icon name="FiExternalLink" aria-hidden="true" /> Get a key
+                  </a>
+                  {isConnected && (
+                    <button type="button" className="button-secondary" onClick={() => disconnectProvider(service.id)}>
+                      Remove
+                    </button>
+                  )}
+                  <button type="button" className="button-primary" onClick={() => saveProvider(service.id)}>
+                    {isConnected ? 'Save changes' : 'Save provider'}
                   </button>
-                ) : (
-                  <button className="button-connect" onClick={() => handleConnect(service.id)} disabled={loading[service.id]}>
-                    {loading[service.id] ? 'Testing...' : 'Connect'}
-                  </button>
-                )}
+                </div>
+                <p className="endpoint-note">Endpoint: {service.apiEndpoint}</p>
               </div>
-            </div>
+            </article>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };
 

@@ -1,0 +1,323 @@
+/* Focused motion and first-run guidance layer */
+.agent-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 56px;
+  color: var(--theme-text);
+  animation: bunny-enter 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.agent-thinking-compact {
+  min-height: 48px;
+}
+
+.thinking-orbit {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid color-mix(in srgb, var(--bunny-primary) 55%, transparent);
+  border-radius: 50%;
+  background: var(--theme-bg-primary);
+}
+
+.thinking-orbit-dot {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  margin-left: -3.5px;
+  border-radius: 50%;
+  background: var(--bunny-primary);
+  transform-origin: 3.5px 14px;
+  animation: bunny-orbit 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.thinking-copy {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.thinking-copy strong {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--theme-text);
+}
+
+.thinking-phase {
+  color: var(--theme-text-secondary);
+  font-size: 0.84rem;
+}
+
+.thinking-dots span {
+  display: inline-block;
+  animation: bunny-dot 1.2s ease-in-out infinite;
+}
+
+.thinking-dots span:nth-child(2) { animation-delay: 120ms; }
+.thinking-dots span:nth-child(3) { animation-delay: 240ms; }
+
+.response-skeleton {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  max-width: 34rem;
+}
+
+.response-skeleton-line {
+  height: 0.7rem;
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  animation: bunny-pulse 1.6s ease-in-out infinite;
+}
+
+.response-skeleton-line:nth-child(2) { width: 84%; animation-delay: 120ms; }
+.response-skeleton-line:nth-child(3) { width: 62%; animation-delay: 240ms; }
+
+.response-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  color: var(--theme-text-secondary);
+  font-size: 0.75rem;
+}
+
+.response-state-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--theme-success);
+}
+
+.response-state.is-thinking .response-state-dot {
+  background: var(--bunny-primary);
+  animation: bunny-pulse 1s ease-in-out infinite;
+}
+
+.step-status-icon {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.step-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--theme-text-secondary);
+}
+
+.step-node.processing .step-status-dot {
+  background: var(--bunny-primary);
+  animation: bunny-pulse 1s ease-in-out infinite;
+}
+
+.step-node.completed .step-status-dot {
+  background: var(--theme-success);
+}
+
+.onboarding-tour {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.onboarding-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(5, 5, 12, 0.72);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.onboarding-highlight {
+  position: fixed;
+  z-index: 1;
+  border: 2px solid var(--bunny-primary);
+  border-radius: 0.75rem;
+  box-shadow: 0 0 0 4px rgba(239, 120, 183, 0.18);
+  pointer-events: none;
+  animation: bunny-highlight 1.8s ease-in-out infinite;
+}
+
+.onboarding-card {
+  position: fixed;
+  z-index: 2;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 1px solid var(--theme-border);
+  border-radius: 1rem;
+  background: var(--theme-bg-secondary);
+  color: var(--theme-text);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  animation: bunny-tour-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.onboarding-card-header,
+.onboarding-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.onboarding-card-header {
+  color: var(--bunny-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.onboarding-progress {
+  margin: 1rem 0 0.35rem;
+  color: var(--theme-text-secondary);
+  font-size: 0.75rem;
+}
+
+.onboarding-card h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.onboarding-card p:not(.onboarding-progress) {
+  margin: 0.65rem 0 1.25rem;
+  color: var(--theme-text-secondary);
+  line-height: 1.5;
+}
+
+.onboarding-close,
+.onboarding-skip,
+.onboarding-next {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.onboarding-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font-size: 1.35rem;
+}
+
+.onboarding-skip {
+  padding: 0.7rem 0;
+  background: transparent;
+  color: var(--theme-text-secondary);
+}
+
+.onboarding-next {
+  min-width: 88px;
+  min-height: 42px;
+  padding: 0.7rem 1rem;
+  border-radius: 0.6rem;
+  background: var(--bunny-primary);
+  color: white;
+  font-weight: 650;
+}
+
+.onboarding-next:hover,
+.onboarding-next:focus-visible {
+  background: color-mix(in srgb, var(--bunny-primary) 82%, white);
+}
+
+.onboarding-close:focus-visible,
+.onboarding-skip:focus-visible,
+.onboarding-next:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--bunny-primary) 55%, white);
+  outline-offset: 3px;
+}
+
+@keyframes bunny-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bunny-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes bunny-dot {
+  0%, 70%, 100% { opacity: 0.25; transform: translateY(0); }
+  35% { opacity: 1; transform: translateY(-2px); }
+}
+
+@keyframes bunny-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+@keyframes bunny-highlight {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+@keyframes bunny-tour-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-thinking,
+  .thinking-orbit-dot,
+  .thinking-dots span,
+  .response-skeleton-line,
+  .response-state.is-thinking .response-state-dot,
+  .step-node.processing .step-status-dot,
+  .onboarding-highlight,
+  .onboarding-card {
+    animation: none;
+  }
+}
+
+/* Small baseline resets for interactive elements enhanced by the motion layer. */
+.ai-selection-pill {
+  appearance: none;
+  font: inherit;
+}
+
+.response-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.response-service {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.step-status-label {
+  margin-top: 0.15rem;
+  color: var(--theme-text-secondary);
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+}
+
+
+.spinner {
+  animation: bunny-spin 900ms linear infinite;
+}
+
+@keyframes bunny-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
